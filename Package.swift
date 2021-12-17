@@ -9,15 +9,13 @@ let package = Package(
                 .executable(name: "txtool", targets: ["Txtool"])
         ],
         dependencies: [
-                .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.2"),
-                .package(name: "swift-log", url: "https://github.com/apple/swift-log.git", from: "1.4.2")
+                .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.2")
         ],
         targets: [
                 .executableTarget(
                         name: "Txtool",
                         dependencies: [
-                                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                                .product(name: "Logging", package: "swift-log")
+                                .product(name: "ArgumentParser", package: "swift-argument-parser")
                         ]
                 ),
                 .testTarget(name: "TxtoolTests", dependencies: ["Txtool"])
