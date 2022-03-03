@@ -3,7 +3,7 @@ on: [push, pull_request, release]
 jobs:
   build_txtool:
     name: Build Txtool
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run Swift Build
