@@ -8,6 +8,6 @@ struct Txtool: ParsableCommand {
                 abstract: "Text Tool",
                 discussion: "A tool to handle texts",
                 version: "0.1.0",
-                subcommands: [Unique.self, AddText.self]
+                subcommands: [Unique.self, AddText.self, Codepoint.self]
         )
 }
