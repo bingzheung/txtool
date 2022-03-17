@@ -9,7 +9,7 @@ let package = Package(
                 .executable(name: "txtool", targets: ["Txtool"])
         ],
         dependencies: [
-                .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.3")
+                .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.1")
         ],
         targets: [
                 .executableTarget(
