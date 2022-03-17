@@ -32,7 +32,7 @@ extension Txtool {
                                 throw UniqueError.readInputFileFailed
                         }
 
-                        let rawContent: String = readContent.trimmingCharacters(in: .whitespacesAndNewlines)
+                        let rawContent: String = readContent.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: .controlCharacters)
                         guard !(rawContent.isEmpty) else {
                                 let isOutputFileCreated: Bool = FileManager.default.createFile(atPath: output, contents: nil)
                                 if isOutputFileCreated {
@@ -42,7 +42,7 @@ extension Txtool {
                                 }
                         }
 
-                        let sourceLines: [String] = rawContent.components(separatedBy: .newlines).map({ $0.trimmingCharacters(in: .whitespacesAndNewlines)})
+                        let sourceLines: [String] = rawContent.components(separatedBy: .newlines).map({ $0.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: .controlCharacters) })
                         let uniquedSourceLines: [String] = sourceLines.uniqued()
                         let product: String = uniquedSourceLines.joined(separator: "\n")
 
