@@ -1,15 +1,15 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 
 import PackageDescription
 
 let package = Package(
         name: "Txtool",
-        platforms: [.macOS(.v12), .iOS(.v15), .macCatalyst(.v15), .watchOS(.v8), .tvOS(.v15)],
+        platforms: [.macOS(.v12)],
         products: [
                 .executable(name: "txtool", targets: ["Txtool"])
         ],
         dependencies: [
-                .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.1")
+                .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.4")
         ],
         targets: [
                 .executableTarget(
