@@ -1,5 +1,7 @@
 name: Build
 on: [push, pull_request, release]
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.1.app/Contents/Developer
 jobs:
   build_txtool:
     name: Build Txtool
