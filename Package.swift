@@ -4,12 +4,12 @@ import PackageDescription
 
 let package = Package(
         name: "Txtool",
-        platforms: [.macOS(.v12)],
+        platforms: [.macOS(.v13)],
         products: [
                 .executable(name: "txtool", targets: ["Txtool"])
         ],
         dependencies: [
-                .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.4")
+                .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.1")
         ],
         targets: [
                 .executableTarget(
