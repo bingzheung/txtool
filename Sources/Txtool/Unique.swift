@@ -33,18 +33,15 @@ extension Txtool {
                         }
 
                         let rawContent: String = readContent.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: .controlCharacters)
-                        guard !(rawContent.isEmpty) else {
-                                let isOutputFileCreated: Bool = FileManager.default.createFile(atPath: output, contents: nil)
-                                if isOutputFileCreated {
-                                        return
-                                } else {
-                                        throw UniqueError.createOutputFileFailed
-                                }
-                        }
+                        guard !(rawContent.isEmpty) else { throw UniqueError.inputFileIsEmpty }
 
-                        let sourceLines: [String] = rawContent.components(separatedBy: .newlines).map({ $0.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: .controlCharacters) })
-                        let uniquedSourceLines: [String] = sourceLines.uniqued()
-                        let product: String = uniquedSourceLines.joined(separator: "\n")
+                        let sourceLines: [String] = rawContent
+                                .components(separatedBy: .newlines)
+                                .map({ $0.trimmingCharacters(in: .whitespaces).trimmingCharacters(in: .controlCharacters) })
+                                .filter({ !$0.isEmpty })
+
+                        let uniquedLines: [String] = sourceLines.uniqued()
+                        let product: String = uniquedLines.joined(separator: "\n")
 
                         do {
                                 try product.write(to: destinationUrl, atomically: true, encoding: .utf8)
@@ -58,6 +55,7 @@ extension Txtool {
                         case outputFileAlreadyExists = "Output file already exists."
                         case createOutputFileFailed = "Failed to create output file."
                         case readInputFileFailed = "Failed to read input file."
+                        case inputFileIsEmpty = "Input file is empty."
                 }
         }
 }
