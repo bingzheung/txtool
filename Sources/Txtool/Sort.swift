@@ -63,10 +63,15 @@ extension Txtool {
                         guard let sourceContent: String = try? String(contentsOf: source) else {
                                 fatalError("Can not read content from source file. Source URL: \(source)")
                         }
-                        let sourceLines: [String] = sourceContent.trimmed().components(separatedBy: .newlines).map({ $0.trimmed() }).uniqued()
+                        let sourceLines: [String] = sourceContent
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+                                .trimmingCharacters(in: .controlCharacters)
+                                .components(separatedBy: .newlines)
+                                .map({ $0.trimmingCharacters(in: .whitespaces).trimmingCharacters(in: .controlCharacters) })
+                                .filter({ !$0.isEmpty })
+                                .uniqued()
 
-                        let locale: Locale = Locale(identifier: "yue")
-                        let sortedLines: [String] = sourceLines.sorted(by: { $0.compare($1, locale: locale) == .orderedAscending })
+                        let sortedLines: [String] = sourceLines.sortedByUnicode()
                         let product: String = sortedLines.joined(separator: "\n")
 
                         let destinationUrl: URL = destination ?? source.deletingLastPathComponent().appendingPathComponent("lines-sorted.txt", isDirectory: false)
@@ -89,21 +94,36 @@ extension Txtool {
                                 return (firstPart, secondPart)
                         }
 
+                        func compareTexts(lhs: String, rhs: String) -> ComparisonResult {
+                                let both: [String] = [lhs, rhs]
+                                let sorted: [String] = both.sortedByUnicode()
+                                if sorted[0] == both[0] {
+                                        return .orderedAscending
+                                } else {
+                                        return .orderedDescending
+                                }
+                        }
+
                         guard let sourceContent: String = try? String(contentsOf: source) else {
                                 fatalError("Can not read content from source file. Source URL: \(source)")
                         }
-                        let sourceLines: [String] = sourceContent.trimmed().components(separatedBy: .newlines).map({ $0.trimmed() }).uniqued()
+                        let sourceLines: [String] = sourceContent
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+                                .trimmingCharacters(in: .controlCharacters)
+                                .components(separatedBy: .newlines)
+                                .map({ $0.trimmingCharacters(in: .whitespaces).trimmingCharacters(in: .controlCharacters) })
+                                .filter({ !$0.isEmpty })
+                                .uniqued()
 
-                        let yueLocale: Locale = Locale(identifier: "yue")
-                        let enLocale: Locale = Locale(identifier: "en")
+                        let englishLocale: Locale = Locale(identifier: "en")
 
                         let sortedLines: [String] = sourceLines.sorted { lhs, rhs in
                                 let lhsComponents = parts(of: lhs)
                                 let rhsComponents = parts(of: rhs)
-                                let alphabetCompare = lhsComponents.second.compare(rhsComponents.second, locale: enLocale)
+                                let alphabetCompare = lhsComponents.second.compare(rhsComponents.second, locale: englishLocale)
                                 if alphabetCompare == .orderedSame {
-                                        let charactersCompare = lhsComponents.first.compare(rhsComponents.first, locale: yueLocale)
-                                        return charactersCompare == .orderedAscending
+                                        let compared = compareTexts(lhs: lhsComponents.first, rhs: rhsComponents.first)
+                                        return compared == .orderedAscending
                                 } else {
                                         return alphabetCompare == .orderedAscending
                                 }
@@ -120,3 +140,37 @@ extension Txtool {
         }
 }
 
+extension Array where Element == String {
+
+        func sortedByUnicode() -> [Element] {
+                return self.sorted(by: { (lhs, rhs) -> Bool in
+                        let lhsCodes: [UInt32] = lhs.map({ $0.unicodeScalars.first?.value ?? 0 })
+                        let rhsCodes: [UInt32] = rhs.map({ $0.unicodeScalars.first?.value ?? 0 })
+                        let lhsCount = lhsCodes.count
+                        let rhsCount = rhsCodes.count
+                        guard (lhsCount > 0) && (lhsCount > 0) else { return lhsCount <= rhsCount }
+                        if lhsCount <= rhsCount {
+                                var isAscending: Bool = true
+                                for index in 0..<lhsCount {
+                                        isAscending = lhsCodes[index] <= rhsCodes[index]
+                                        if !isAscending {
+                                                break
+                                        }
+                                }
+                                return isAscending
+                        } else {
+                                let lhsLeadingCodes: [UInt32] = lhsCodes.dropLast(lhsCount - rhsCount)
+                                let shouldCompareLeading: Bool = lhsLeadingCodes != rhsCodes
+                                guard shouldCompareLeading else { return false }
+                                var isAscending: Bool = true
+                                for index in 0..<rhsCount {
+                                        isAscending = lhsCodes[index] <= rhsCodes[index]
+                                        if !isAscending {
+                                                break
+                                        }
+                                }
+                                return isAscending
+                        }
+                })
+        }
+}
