@@ -146,31 +146,30 @@ extension Array where Element == String {
                 return self.sorted(by: { (lhs, rhs) -> Bool in
                         let lhsCodes: [UInt32] = lhs.map({ $0.unicodeScalars.first?.value ?? 0 })
                         let rhsCodes: [UInt32] = rhs.map({ $0.unicodeScalars.first?.value ?? 0 })
-                        let lhsCount = lhsCodes.count
-                        let rhsCount = rhsCodes.count
-                        guard (lhsCount > 0) && (lhsCount > 0) else { return lhsCount <= rhsCount }
-                        if lhsCount <= rhsCount {
-                                var isAscending: Bool = true
-                                for index in 0..<lhsCount {
-                                        isAscending = lhsCodes[index] <= rhsCodes[index]
-                                        if !isAscending {
-                                                break
-                                        }
-                                }
-                                return isAscending
-                        } else {
-                                let lhsLeadingCodes: [UInt32] = lhsCodes.dropLast(lhsCount - rhsCount)
-                                let shouldCompareLeading: Bool = lhsLeadingCodes != rhsCodes
-                                guard shouldCompareLeading else { return false }
-                                var isAscending: Bool = true
-                                for index in 0..<rhsCount {
-                                        isAscending = lhsCodes[index] <= rhsCodes[index]
-                                        if !isAscending {
-                                                break
-                                        }
-                                }
-                                return isAscending
+                        let lhsCount: Int = lhsCodes.count
+                        let rhsCount: Int = rhsCodes.count
+                        guard (lhsCount > 0) && (lhsCount > 0) else { return lhsCount < rhsCount }
+                        if lhs == rhs {
+                                return false
+                        } else if lhs.hasPrefix(rhs) {
+                                return false
+                        } else if rhs.hasPrefix(lhs) {
+                                return true
                         }
+                        let minLength: Int = Swift.min(lhsCount, rhsCount)
+                        var isAscending: Bool = false
+                        for index in 0..<minLength {
+                                if lhsCodes[index] < rhsCodes[index] {
+                                        isAscending = true
+                                        break
+                                } else if lhsCodes[index] > rhsCodes[index] {
+                                        isAscending = false
+                                        break
+                                } else {
+                                        isAscending = false
+                                }
+                        }
+                        return isAscending
                 })
         }
 }
