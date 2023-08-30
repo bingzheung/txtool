@@ -18,7 +18,7 @@ extension Txtool {
                         var output: String = ""
                         for character in text {
                                 let codepoint: String = character.codePointsText
-                                let item: String = "\(codepoint)# { \(character) }\n"
+                                let item: String = "\(codepoint) { \(character) }\n"
                                 output += item
                         }
                         print(output)
