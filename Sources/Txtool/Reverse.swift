@@ -3,12 +3,12 @@ import ArgumentParser
 
 extension Txtool {
 
-        struct Unique: ParsableCommand {
+        struct Reverse: ParsableCommand {
 
                 static let configuration: CommandConfiguration = CommandConfiguration(
-                        commandName: "unique",
-                        abstract: "Unique lines",
-                        discussion: "Deduplicate lines"
+                        commandName: "reverse",
+                        abstract: "Reverse lines",
+                        discussion: "Reverse top-bottom"
                 )
 
                 @Option(name: .shortAndLong, help: "The input file path.")
@@ -41,8 +41,8 @@ extension Txtool {
                                 .filter({ !$0.isEmpty })
                         guard !(sourceLines.isEmpty) else { throw TxtoolError.inputFileIsEmpty }
 
-                        let uniquedLines: [String] = sourceLines.uniqued()
-                        let product: String = uniquedLines.joined(separator: "\n") + "\n"
+                        let reveredLines = sourceLines.reversed()
+                        let product: String = reveredLines.joined(separator: "\n") + "\n"
 
                         do {
                                 try product.write(to: destinationUrl, atomically: true, encoding: .utf8)

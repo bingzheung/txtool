@@ -48,7 +48,7 @@ extension Txtool {
                         let transformed: [String] = sourceLines.map { line -> String in
                                 return line.isEmpty ? line : add(origin: line)
                         }
-                        let product: String = transformed.joined(separator: "\n")
+                        let product: String = transformed.joined(separator: "\n") + "\n"
                         do {
                                 try product.write(to: destinationUrl, atomically: true, encoding: .utf8)
                         } catch {
